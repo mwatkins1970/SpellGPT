@@ -5,7 +5,7 @@ This tool currently consists of a single python script, spellGPT.py. Apologies f
 Launching the script should open a settings window where you'll need to enter you OpenAI API security key.
 You also need to enter:
 
-* The GPT-3 engine you want to use (e.g. davinci-instruct-beta, curie-instruct-beta, text-davinci-003, davinci, etc.
+* The GPT-3 engine you want to use (e.g. davinci-instruct-beta, curie-instruct-beta, text-davinci-003, davinci)
 
 * A GPT-3 token (although any string will work, this tool produces the most interesting results when applied to individual tokens, primarily "glitchtokens" - see https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation)
 
