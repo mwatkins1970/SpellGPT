@@ -11,7 +11,7 @@ You also need to enter:
 
 * "starters". The idea is to extend the base prompt with a secondary string of hyphen-separated capital letters, to encourage the model in the direction of spelling. Some suggestions are "I-" (default), "I-A-M-", "W-H-Y-", "W-H-A-T-", "T-H-I-S-".
 
-* "weight cutoff". At each generation, sequences of letters correspond to cumulative products of probabilities (provided via the API's top-five log-probs). Setting a larger value for parameter leads to richer trees, but beyond a certain point they become unhelpfully overpopulated. The default value of 0.0075 seems to work well.
+* "weight cutoff". At each generation, sequences of letters correspond to cumulative products of probabilities (provided via the API's top-five log-probs). Setting a larger value for this parameter leads to richer trees, but beyond a certain point they become unhelpfully overpopulated. The default value of 0.0075 seems to work well.
 
 * "maximum depth". The maximum number of generations/iterations allowed for a given prompt extension. This corresponds to the maximum number of letters which can get added to the prompt per iteration, or tree depth for subtrees that are produced. The default value of 10 seems to work well.
 
