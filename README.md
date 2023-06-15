@@ -1,6 +1,10 @@
+INTRO
+
 SpellGPT is an experimental tool to explore GPT-3's "miraculous" ability not only to spell most of its own token strings (it being a "character blind" model - see https://arxiv.org/pdf/2212.10562.pdf) but also to use this spelling ability as a means to produce novel outputs triggered by various "glitch tokens" (" SolidGoldMagikarp", et al.). 
 
 This tool currently consists of a single python script, spellGPT.py. Apologies for the terrible code (all of my unnecessary global variables, etc). I realise it's a mess, but I'm just getting back into programming after many years away from it and have never built a GUI before. Bear with me.
+
+SETUP
 
 Launching the script should open a settings window where you'll need to enter you OpenAI API security key.
 You also need to enter:
@@ -28,7 +32,7 @@ TREE-BUILDING
 
 Once the starting parameter values have been submitted, a process will begin running in your console for (typically) minute or so, before a window opens with a tree diagram plot and a dialogue box.
 
-ADJUSTING TREES
+VISUALLY ADJUSTING TREE DIAGRAM LAYOUTS
 
 You're asked "Do you want to adjust this tree?". If the tree is overcroweded or has heavily overlapping branches, this is your chance to quickly sort it out. Clicking "yes" introduces a new dialogue allowing you to sequentially specify a (node, rotational angle, spread factor) triple. The node must be a valid node visible in the tree, the rotational angle is in degrees (positive = anticlockwse) and will result in the appropriate rotation of the subtree emanating from the node in question. The spread factor controls the angular spacing of the first generation of branches emanating from the node in question. 
 
