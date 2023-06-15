@@ -6,7 +6,7 @@ This tool currently consists of a single python script, spellGPT.py. Apologies f
 
 I've used the matplotlib and tkinter libraries for the GUI.
 
-\\
+
 SETUP
 
 Launching the script should open a settings window where you'll need to enter you OpenAI API security key.
