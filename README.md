@@ -19,7 +19,7 @@ You also need to enter:
 
 * "maximum depth". The maximum number of generations/iterations allowed for a given prompt extension. This corresponds to the maximum number of letters which can get added to the prompt per iteration, or tree depth for subtrees that are produced. The default value of 10 seems to work well.
 
-* subdirectory to save images to (this will default to the subdirectory /SpellGPT_images)
+* subdirectory to save images and JSON files to to (this will default to the subdirectory /SpellGPT_outputs)
 
 
 USING "STARTERS", OR NOT
