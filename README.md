@@ -24,10 +24,12 @@ Note that if you're mostly interested in looking at how GPT-3 models try to spel
 
 Once the starting parameter values have been submitted, a process will begin running in your console for (typically) minute or so, before a window opens with a tree diagram plot and a dialogue box.
 
+
 You're asked "Do you want to adjust this tree?". If the tree is overcroweded or has heavily overlapping branches, this is your chance to quickly sort it out. Clicking "yes" introduces a new dialogue allowing you to sequentially specify a (node, rotational angle, spread factor) triple. The node must be a valid node visible in the tree, the rotational angle is in degrees (positive = anticlockwse) and will result in the appropriate rotation of the subtree emanating from the node in question. The spread factor controls the angular spacing of the first generation of branches emanating from the node in question. 
 
 "*" designates the root node, and choosing that and spread factor = 2 or 3 will often make an illegible tree much more manageable.
 Submit any number of these visual updates, and then click on 'done' to finalise the image. You're given one last chance to change your mind. If not, this image will get saved to your subfolder, timestamped and named according to the current prompt.
 
-When the tree diagram layout is finalised, you are asked to choose a visible node to extend the current prompt. Submit this to continue until you're done, at which point you can select the root node ("*") to terminate the application. 
+
+When the tree diagram layout is finalised, you are asked to choose a visible node to extend the current prompt. Submit this to continue, and repeat until you're done, at which point you can select the root node ("*") to terminate the application. 
 
