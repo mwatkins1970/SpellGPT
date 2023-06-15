@@ -57,7 +57,8 @@ Ideally
 * nodes would be clickable for selecting prompt extension
 * some kind of cumulative or average weight displayed to indicate to user how "with" or "against" the stream of log-probs they are swimming in their selection of prompt extensions... perhaps an estimate of the temperature mosty likely to produce that particular rollout
 * user settings where things like font, colour, window sizes, etc. could be set
-* a better way of dealing with proportionality between weights and branch thicknesses (currently there's a minimal thickness involved) (11) * a means to CTRL-Z or more generally rewind a rollout (deleting any saved files in the process)
+* a better way of dealing with proportionality between weights and branch thicknesses (currently there's a minimal thickness involved)
+* a means to CTRL-Z or more generally rewind a rollout (deleting any saved files in the process)
 
 I think there's a minor bug where, if you select an invalid node for prompt extension, an image gets saved (resulting in duplicates)
 
