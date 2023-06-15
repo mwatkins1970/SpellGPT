@@ -13,7 +13,7 @@ You also need to enter:
 
 * A GPT-3 token (although any string will work, this tool produces the most interesting results when applied to individual tokens, primarily "glitch tokens" - see https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation)
 
-* "starters". The idea is to extend the base prompt with a secondary string of hyphen-separated capital letters, to encourage the model in the direction of spelling. Some suggestions are "I-" (default), "I-A-M-", "W-H-Y-", "W-H-A-T-", "T-H-I-S-".
+* "starters". The idea is to extend the base prompt 'Please spell the string "{token}" in all capital letters, separated by hyphens.\n'  with a secondary string of hyphen-separated capital letters, to encourage the model in the direction of spelling. Some suggestions are "I-" (the default), "I-A-M-", "W-H-Y-", "W-H-A-T-", "T-H-I-S-".
 
 * "weight cutoff". At each generation, sequences of letters correspond to cumulative products of probabilities (provided via the API's top-five log-probs). Setting a larger value for this parameter leads to richer trees, but beyond a certain point they become unhelpfully overpopulated. The default value of 0.0075 seems to work well.
 
@@ -41,4 +41,10 @@ Submit any number of these visual updates, and then click on 'done' to finalise 
 EXTENDING PROMPT
 
 When the tree diagram layout is finalised, you are asked to choose a visible node to extend the current prompt. Submit this to continue, and repeat until you're done, at which point you can select the root node ("*") to terminate the application. 
+
+FURTHER DEVELOPMENT NOTES
+
+Ideally (1) the settings window would include a dropdown so users could select from a number of base prompts (or just type in one of their own); (2) a dropdown to select from the list of glitch tokens; (3) a dropdown to select the engine; (4) users could change the cutoff between iteration; (5) the token counter would appear embedded in the main window, possibly even tied to a pricing factor so users could see how much they were spending; (6) all of the console activity would appear in a scrolling text window in the left frame of the main window; nodes would be clickable for rearranging tree diagrams (mouse left/right to control rotation, mouse up/down to control branch angle spread fact); (7) nodes would be clickable for selecting prompt extension; (8) some kind of cumulative or average weight displayed to indicate to user how "with" or "against" the stream of log-probs they are swimming in their selection of prompt extensions; (9) user settings where things like font and colour could be set; (10) a better way of dealing with proportionality between weights and branch thicknesses(currently there's a minimal thickness involved); (11) a means to CTRL-Z or more generally rewind a rollout (deleting any saved files in the process).
+
+I think there's a minor bug where, if you select an invalid node for prompt extension, an image gets saved (resulting in duplicates)
 
