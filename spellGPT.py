@@ -210,9 +210,9 @@ def adj_submit_clicked(root0):                              # the tree-adjustmen
     except ValueError:
         sprd = 1
 
-    print("\nNODE: " + node)
-    print("ROTA: " + str(rota))
-    print("SPRD: " + str(sprd))
+    print("\nnode: " + node)
+    print("rotational angle: " + str(rota))
+    print("branch spread factor: " + str(sprd))
 
     if node == "*":
         if "*" in rotations.keys():
@@ -225,7 +225,7 @@ def adj_submit_clicked(root0):                              # the tree-adjustmen
         elif node.isupper():
             rotations[node] = (int(float(rota)),float(sprd))
 
-    print("current dictionary of subtree notations:")
+    print("current dictionary of nodal subtree (rotations, spread factors):")
     print(rotations) 
 
     ax.clear()  # Clear the existing plot
@@ -573,7 +573,9 @@ def mainfunction(data):
     print("\n\nTREE JSON:")
     print(tree_json)
     print("\n\n")
-    print("Total number of tokens used:", tot_tok) #         Print the total number of tokens used so far
+    print("TOTAL TOKENUSED:")
+    print(tot_tok)              # Print the total number of tokens used so far
+    print("\n\n")
 
 
     caption = "PROMPT: " + prompt + '\n\n'
