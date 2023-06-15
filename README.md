@@ -4,6 +4,8 @@ SpellGPT is an experimental tool to explore GPT-3's "miraculous" ability not onl
 
 This tool currently consists of a single python script, spellGPT.py. Apologies for the terrible code (all of my unnecessary global variables, etc). I realise it's a mess, but I'm just getting back into programming after many years away from it and had never built a GUI before. Bear with me.
 
+I'm using the matplotlib and tkinter libraries for the GUI.
+
 SETUP
 
 Launching the script should open a settings window where you'll need to enter you OpenAI API security key.
@@ -44,7 +46,18 @@ When the tree diagram layout is finalised, you are asked to choose a visible nod
 
 FURTHER DEVELOPMENT NOTES
 
-Ideally (1) the settings window would include a dropdown so users could select from a number of base prompts (or just type in one of their own); (2) a dropdown to select from the list of glitch tokens; (3) a dropdown to select the engine; (4) users could change the cutoff between iteration; (5) the token counter would appear embedded in the main window, possibly even tied to a pricing factor so users could see how much they were spending; (6) all of the console activity would appear in a scrolling text window in the left frame of the main window; nodes would be clickable for rearranging tree diagrams (mouse left/right to control rotation, mouse up/down to control branch angle spread fact); (7) nodes would be clickable for selecting prompt extension; (8) some kind of cumulative or average weight displayed to indicate to user how "with" or "against" the stream of log-probs they are swimming in their selection of prompt extensions; (9) user settings where things like font and colour could be set; (10) a better way of dealing with proportionality between weights and branch thicknesses(currently there's a minimal thickness involved); (11) a means to CTRL-Z or more generally rewind a rollout (deleting any saved files in the process).
+Ideally
+* the settings window would include a dropdown so users could select from a number of base prompts (or just type in one of their own)
+* a dropdown to select from the list of glitch tokens
+* a dropdown to select the engine
+* users could change the cutoff between iteration
+* the token counter that's currenlty printed to console would appear embedded in the main window (upper left), possibly even tied to a pricing factor so users could see how much they were spending
+* all of the console activity would appear in a scrolling text window in the left frame of the main window
+* nodes would be clickable for rearranging tree diagrams (mouse left/right to control rotation, mouse up/down to control branch angle spread fact)
+* nodes would be clickable for selecting prompt extension
+* some kind of cumulative or average weight displayed to indicate to user how "with" or "against" the stream of log-probs they are swimming in their selection of prompt extensions... perhaps an estimate of the temperature mosty likely to produce that particular rollout
+* user settings where things like font, colour, window sizes, etc. could be set
+* a better way of dealing with proportionality between weights and branch thicknesses (currently there's a minimal thickness involved) (11) * a means to CTRL-Z or more generally rewind a rollout (deleting any saved files in the process)
 
 I think there's a minor bug where, if you select an invalid node for prompt extension, an image gets saved (resulting in duplicates)
 
