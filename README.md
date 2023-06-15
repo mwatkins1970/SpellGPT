@@ -4,7 +4,7 @@ SpellGPT is an experimental tool to explore GPT-3's "miraculous" ability not onl
 
 This tool currently consists of a single python script, spellGPT.py. Apologies for the terrible code (all of my unnecessary global variables, etc). I realise it's a mess, but I'm just getting back into programming after many years away from it and had never built a GUI before. Bear with me.
 
-I'm using the matplotlib and tkinter libraries for the GUI.
+I've used the matplotlib and tkinter libraries for the GUI.
 
 SETUP
 
