@@ -2,7 +2,7 @@ INTRO
 
 SpellGPT is an experimental tool to explore GPT-3's "miraculous" ability not only to spell most of its own token strings (it being a "character blind" model - see https://arxiv.org/pdf/2212.10562.pdf) but also to use this spelling ability as a means to produce novel outputs triggered by various "glitch tokens" (" SolidGoldMagikarp", et al.). 
 
-This tool currently consists of a single python script, spellGPT.py. Apologies for the terrible code (all of my unnecessary global variables, etc). I realise it's a mess, but I'm just getting back into programming after many years away from it and have never built a GUI before. Bear with me.
+This tool currently consists of a single python script, spellGPT.py. Apologies for the terrible code (all of my unnecessary global variables, etc). I realise it's a mess, but I'm just getting back into programming after many years away from it and had never built a GUI before. Bear with me.
 
 SETUP
 
