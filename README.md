@@ -1,2 +1,31 @@
-# SpellGPT
 An experimental tool to explore GPT-3's "miraculous" ability not only to spell its own token strings (it being a "character blind" model) but also to use spelling as a means to produce novel outputs triggered by various "glitch tokens" (" SolidGoldMagikarp", et al.)
+
+This tool currently consists of a single python script, spellGPT.py. Apologies for the terrible code (all the unnecessary global variables, etc). I realise it's a mess, but I'm just getting back into programming after many years away from it. Bear with me.
+
+Launching the script should open a settings window where you'll need to enter you OpenAI API security key.
+You also need to enter:
+
+* The GPT-3 engine you want to use (e.g. davinci-instruct-beta, curie-instruct-beta, text-davinci-003, davinci, etc.
+
+* A GPT-3 token (although any string will work, this tool produces the most interesting results when applied to individual tokens, primarily "glitchtokens" - see https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation)
+
+* "starters". The idea is to extend the base prompt with a secondary string of hyphen-separated capital letters, to encourage the model in the direction of spelling. Some suggestions are "I-" (default), "I-A-M-", "W-H-Y-", "W-H-A-T-", "T-H-I-S-".
+
+* "weight cutoff". At each generation, sequences of letters correspond to cumulative products of probabilities (provided via the API's top-five log-probs). Setting a larger value for parameter leads to richer trees, but beyond a certain point they become unhelpfully overpopulated. The default value of 0.0075 seems to work well.
+
+* "maximum depth". The maximum number of generations/iterations allowed for a given prompt extension. This corresponds to the maximum number of letters which can get added to the prompt per iteration, or tree depth for subtrees that are produced. The default value of 10 seems to work well.
+
+* subdirectory to save images to (this will default to the subdirectory /SpellGPT_images)
+
+If the "starters" field is returned empty, then a different approach must be used to generate the first letter: The base prompt will be used some number of times in a loop until a capital-letter-plus-hyphen pair of tokens is output. The branches from the root node are produced statistically based on this sampling. All further generations are generated solely by the top-five log probs produced by the API for the current prompt-plus-extension. Larger numbers will cause some time delay in generation and be costlier in token use, but lead to more "accurate" results. Note that the davinci model is very resistant to producing these token pairs, compared to the instruct models. Th default value of 100 seems to work perfectly well for davinci-instruct-beta and tends to use 10-20,000 tokens
+
+
+Once the starting parameter values have been submitted, a process will begin running in your console for (typically) minute or so, before a window opens with a tree diagram plot and a dialogue box.
+
+You're asked "Do you want to adjust this tree?". If the tree is overcroweded or has heavily overlapping branches, this is your chance to quickly sort it out. Clicking "yes" introduces a new dialogue allowing you to sequentially specify a (node, rotational angle, spread factor) triple. The node must be a valid node visible in the tree, the rotational angle is in degrees (positive = anticlockwse) and will result in the appropriate rotation of the subtree emanating from the node in question. The spread factor controls the angular spacing of the first generation of branches emanating from the node in question. 
+
+"*" designates the root node, and choosing that and spread factor = 2 or 3 will often make an illegible tree much more manageable.
+Submit any number of these visual updates, and then click on 'done' to finalise the image. You're given one last chance to change your mind. If not, this image will get saved to your subfolder, timestamped and named according to the current prompt.
+
+When the tree diagram layout is finalised, you are asked to choose a visible node to extend the current prompt. Submit this to continue until you're done, at which point you can select the root node ("*") to terminate the application. 
+
