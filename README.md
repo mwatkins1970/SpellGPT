@@ -11,7 +11,7 @@ You also need to enter:
 
 * The GPT-3 engine you want to use (e.g. davinci-instruct-beta, curie-instruct-beta, text-davinci-003, davinci)
 
-* A GPT-3 token (although any string will work, this tool produces the most interesting results when applied to individual tokens, primarily "glitchtokens" - see https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation)
+* A GPT-3 token (although any string will work, this tool produces the most interesting results when applied to individual tokens, primarily "glitch tokens" - see https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation)
 
 * "starters". The idea is to extend the base prompt with a secondary string of hyphen-separated capital letters, to encourage the model in the direction of spelling. Some suggestions are "I-" (default), "I-A-M-", "W-H-Y-", "W-H-A-T-", "T-H-I-S-".
 
