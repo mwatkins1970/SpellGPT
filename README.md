@@ -34,9 +34,8 @@ Once the starting parameter values have been submitted, a process will begin run
 
 VISUALLY ADJUSTING TREE DIAGRAM LAYOUTS
 
-You're asked "Do you want to adjust this tree?". If the tree is overcroweded or has heavily overlapping branches, this is your chance to quickly sort it out. Clicking "yes" introduces a new dialogue allowing you to sequentially specify a (node, rotational angle, spread factor) triple. The node must be a valid node visible in the tree, the rotational angle is in degrees (positive = anticlockwse) and will result in the appropriate rotation of the subtree emanating from the node in question. The spread factor controls the angular spacing of the first generation of branches emanating from the node in question. 
+You're asked "Do you want to adjust this tree?". If the tree is overcroweded or has heavily overlapping branches, this is your chance to quickly sort it out. Clicking "yes" introduces a new dialogue allowing you to sequentially specify a (node, rotational angle, spread factor) triple. The node must be a valid node visible in the tree, the rotational angle is in degrees (positive = anticlockwse) and will result in the appropriate rotation of the subtree emanating from the node in question. The spread factor controls the angular spacing of the first generation of branches emanating from the node in question. "*" designates the root node.
 
-"*" designates the root node, and choosing that and spread factor = 2 or 3 will often make an illegible tree much more manageable.
 Submit any number of these visual updates, and then click on 'done' to finalise the image. You're given one last chance to change your mind. If not, this image will get saved to your subfolder, timestamped and named according to the current prompt.
 
 EXTENDING PROMPT
