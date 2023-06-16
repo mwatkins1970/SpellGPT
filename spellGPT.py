@@ -47,6 +47,13 @@ def submit():                   # Handles submissions to "SpellGPT settings" win
     if not os.path.exists(save_subfolder):
         # If not, create the new directory
         os.mkdir(save_subfolder)
+        os.mkdir(save_subfolder + '/JSON')
+        os.mkdir(save_subfolder + '/images')
+    else:
+        if not os.path.exists(save_subfolder + '/images'):
+            os.mkdir(save_subfolder + '/images')
+        if not os.path.exists(save_subfolder + '/JSON'):
+            os.mkdir(save_subfolder + '/JSON')
 
     if starters:
         root.destroy()                  # close the dialogue box
@@ -270,7 +277,7 @@ def done_yes_clicked(root0, left_frame, node_dict_list, fig):               # us
 
     now = datetime.now()
     datetime_str = now.strftime('%Y%m%d_%H%M%S')
-    fig.savefig(save_subfolder + '/' + datetime_str + '_' + token.strip() + '_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_spelltree.png')
+    fig.savefig(save_subfolder + '/images/' + datetime_str + '_' + token.strip() + '_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_spelltree.png')
     
     # Update the global prompt_widget variable
     prompt_widget = st.ScrolledText(left_frame, width=30, height=16)
@@ -563,7 +570,7 @@ def mainfunction(data):
     #Save the result to a JSON file
     now = datetime.now()
     datetime_str = now.strftime('%Y%m%d_%H%M%S')
-    with open(save_subfolder + '/' + datetime_str + '_' + token.strip() + '_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_tree.json', 'w') as outfile:
+    with open(save_subfolder + '/JSON/' + datetime_str + '_' + token.strip() + '_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_tree.json', 'w') as outfile:
         json.dump(tree_json, outfile)
 
 
