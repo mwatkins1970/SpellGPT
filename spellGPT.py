@@ -580,7 +580,7 @@ def mainfunction(data):
     print("\n\nTREE JSON:")
     print(tree_json)
     print("\n\n")
-    print("TOTAL TOKENUSED:")
+    print("TOTAL TOKENS USED:")
     print(tot_tok)              # Print the total number of tokens used so far
     print("\n\n")
 
