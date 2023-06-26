@@ -34,7 +34,26 @@ def submit():                   # Handles submissions to "SpellGPT settings" win
     global openai, token, base_prompt, starters, prompt, cutoff, engine, max_depth, save_subfolder, runs_per_it, starters_blank
     openai.api_key = entry1.get().strip()
     token = entry2.get().rstrip()
+
     base_prompt = f'Please spell the string "{token}" in all capital letters, separated by hyphens.\n'
+    #base_prompt = f"Please spell the string '{token}' in all capital letters, separated by hyphens.\n"
+    #base_prompt = f'I want you to spell out the string "{token}" in all capital letters, separated by hyphens.\n'
+    #base_prompt = f"I want you to spell out the string '{token}' in all capital letters, separated by hyphens.\n"
+    #base_prompt = f'Through the medium of spelling "{token}" in all capital letters, speak!\n'
+    #base_prompt = f"Spell out the string '{token}' in all capital letters, separated by hyphens.\n"
+    #base_prompt = f"Spell the string '{token}' in all capital letters, separated by hyphens.\n"
+    #base_prompt = f"Hey you! Spell the string '{token}' in all capital letters, separated by hyphens!\n"
+    #base_prompt = f"This is how you spell the string '{token}' in all capital letters, separated by hyphens:\n"
+    #base_prompt = f"This is how you spell out the string '{token}' in all capital letters, separated by hyphens:\n"
+    #base_prompt = f'Spell out the string "{token}" in all capital letters, separated by hyphens.\n'
+    #base_prompt = f'Spell the string "{token}" in all capital letters, separated by hyphens.\n'
+    #base_prompt = f'Hey you! Spell the string "{token}" in all capital letters, separated by hyphens!\n'
+    #base_prompt = f'This is how you spell the string "{token}" in all capital letters, separated by hyphens:\n'
+    #base_prompt = f'This is how you spell out the string "{token}" in all capital letters, separated by hyphens:\n'
+    #base_prompt = f'''Please repeat the string '{token}' back to me immediately!\n"'''
+
+
+
     starters = entry3.get().strip()
     # Ideally a dropdown would present a number of suggested prompts emedding {token}
     prompt = base_prompt + starters
@@ -83,7 +102,7 @@ sprd = 1
 
 tot_tok = 0 # Initialize the total token counter
 
-spelltree_data = [{"level": 0, "letter": "", "weight": 1, "children": []}]     # This is effectively the data for the root node before any children are hatched
+spelltree_data = [{"level": 0, "letter": "", "weight": 1, "cumu_weight": 1, "children": []}]     # This is effectively the data for the root node before any children are hatched
 node_dict_list = []
 tree_json = {}
 rotations = {}
@@ -142,7 +161,7 @@ submit_button.pack(pady=(35,0))
 root.mainloop()
 
 
-def create_initial_widgets(root0, left_frame, node_dict_list, fig):     
+def create_initial_widgets(root0, left_frame, node_dict_list, fig, cumu_weight):     
     for widget in left_frame.winfo_children():  # Delete existing widgets
         widget.destroy()
 
@@ -158,14 +177,14 @@ def create_initial_widgets(root0, left_frame, node_dict_list, fig):
     button_frame = tk.Frame(left_frame)  # create a new frame to hold the buttons
     button_frame.pack(pady=(20,0))  # pack the new frame into the left frame
 
-    adjust_yes = tk.Button(button_frame, text='yes', command=lambda: adj_yes_clicked(root0, left_frame, node_dict_list, fig))
+    adjust_yes = tk.Button(button_frame, text='yes', command=lambda: adj_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight))
     adjust_yes.pack(side=tk.LEFT, padx=5, pady=5)  # use side=tk.LEFT to pack the buttons next to each other
 
-    adjust_no = tk.Button(button_frame, text='no', command=lambda: adj_done_clicked(root0, left_frame, node_dict_list, fig))
+    adjust_no = tk.Button(button_frame, text='no', command=lambda: adj_done_clicked(root0, left_frame, node_dict_list, fig, cumu_weight))
     adjust_no.pack(side=tk.LEFT, padx=5, pady=5)
 
 
-def adj_yes_clicked(root0, left_frame, node_dict_list, fig):   # User has said "yes", they want to adjust the tree diagram, so they're here given the chance to submit three itmems of data
+def adj_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight):   # User has said "yes", they want to adjust the tree diagram, so they're here given the chance to submit three itmems of data
 
     global node_entry, rota_entry, sprd_entry, rotations, tree_json # Declare these as global variables
 
@@ -190,14 +209,14 @@ def adj_yes_clicked(root0, left_frame, node_dict_list, fig):   # User has said "
     sprd_entry.insert(0, "1")
     sprd_entry.pack()
 
-    adj_sub_button = tk.Button(left_frame, text='submit', command=lambda: adj_submit_clicked(root0))
+    adj_sub_button = tk.Button(left_frame, text='submit', command=lambda: adj_submit_clicked(root0, cumu_weight))
     adj_sub_button.pack(side=tk.TOP, fill=tk.X, pady=(30,0), padx = (77,76))
 
-    done_button = tk.Button(left_frame, text='done', command=lambda: adj_done_clicked(root0, left_frame, node_dict_list, fig))
+    done_button = tk.Button(left_frame, text='done', command=lambda: adj_done_clicked(root0, left_frame, node_dict_list, fig, cumu_weight))
     done_button.pack(side=tk.TOP, fill=tk.X, pady=(20,0), padx = (77,76))
 
 
-def adj_submit_clicked(root0):                              # the tree-adjustment info triple has been submitted
+def adj_submit_clicked(root0, cumu_weight):                              # the tree-adjustment info triple has been submitted
     global node_name, rota, sprd, rotations, tree_json, ax, canvas
     node_name = node_entry.get()
     rota = rota_entry.get()
@@ -234,6 +253,7 @@ def adj_submit_clicked(root0):                              # the tree-adjustmen
 
     print("current dictionary of nodal subtree (rotations, spread factors):")
     print(rotations) 
+    print('\n\n')
 
     ax.clear()  # Clear the existing plot
     ax.axis('off')
@@ -242,7 +262,7 @@ def adj_submit_clicked(root0):                              # the tree-adjustmen
     canvas.draw()  # Redraw the new plot on the canvas
 
 
-def adj_done_clicked(root0, left_frame, node_dict_list, fig):    # user claims to be done with adjustments....just checking
+def adj_done_clicked(root0, left_frame, node_dict_list, fig, cumu_weight):    # user claims to be done with adjustments....just checking
 
     for widget in left_frame.winfo_children():  # Delete existing widgets and build a new set
         widget.destroy()
@@ -259,14 +279,14 @@ def adj_done_clicked(root0, left_frame, node_dict_list, fig):    # user claims t
     done_button_frame = tk.Frame(left_frame)  # create a new frame to hold the buttons
     done_button_frame.pack(pady=(20,0))  # pack the new frame into the left frame
 
-    done_yes = tk.Button(done_button_frame, text='yes', command=lambda: done_yes_clicked(root0, left_frame, node_dict_list, fig))
+    done_yes = tk.Button(done_button_frame, text='yes', command=lambda: done_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight))
     done_yes.pack(side=tk.LEFT, padx=5, pady=5)  # use side=tk.LEFT to pack the buttons next to each other
 
-    done_no = tk.Button(done_button_frame, text='no', command=lambda: adj_yes_clicked(root0, left_frame, node_dict_list, fig))   # not, they're not happy, so yes, they want to adj(ust) it further
+    done_no = tk.Button(done_button_frame, text='no', command=lambda: adj_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight))   # not, they're not happy, so yes, they want to adj(ust) it further
     done_no.pack(side=tk.LEFT, padx=5, pady=5)
 
 
-def done_yes_clicked(root0, left_frame, node_dict_list, fig):               # user definitely happy, time to save image
+def done_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight):               # user definitely happy, time to save image
     global prompt_widget
     global rotations
     for widget in left_frame.winfo_children():     
@@ -291,11 +311,11 @@ def done_yes_clicked(root0, left_frame, node_dict_list, fig):               # us
     ext_entry.insert(0, "")
     ext_entry.pack()
 
-    ext_sub_button = tk.Button(left_frame, text='submit', command=lambda: ext_sub_clicked(ext_entry, root0, left_frame, node_dict_list, fig))
+    ext_sub_button = tk.Button(left_frame, text='submit', command=lambda: ext_sub_clicked(ext_entry, root0, left_frame, node_dict_list, fig, cumu_weight))
     ext_sub_button.pack(pady=(35,0))
 
 
-def ext_sub_clicked(ext_entry, root0, left_frame, node_dict_list, fig):               # user submits a node with which to extend the prompt
+def ext_sub_clicked(ext_entry, root0, left_frame, node_dict_list, fig, cumu_weight):               # user submits a node with which to extend the prompt
     global prompt
     global prompt_widget
 
@@ -315,10 +335,12 @@ def ext_sub_clicked(ext_entry, root0, left_frame, node_dict_list, fig):         
                 legit_node = True
         if not legit_node:
             print("\n" + ext_node + " is a not a valid node, please try again!\n")
-            done_yes_clicked(root0, left_frame, node_dict_list, fig)
+            done_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight)
 
     if legit_node:
+
         print("selected node: " + ext_node)
+
         prompt += hyphenise(ext_node)
 
         prompt_widget['state'] = 'normal'
@@ -343,6 +365,7 @@ def ext_sub_clicked(ext_entry, root0, left_frame, node_dict_list, fig):         
 
         nu_spelltree_data = [nu_node]
         root0.destroy()
+
         mainfunction(nu_spelltree_data)
 
 
@@ -380,7 +403,7 @@ def subtract_levels(node, level_diff):
         subtract_levels(child, level_diff)
 
 
-def build_spell_tree(token, engine, data, prompt, starters):
+def build_spell_tree(token, engine, data, prompt, starters):                        # This takes a JSON spell tree ('data') and expands it recursiely
     global tot_tok # Use the tot_tok variable defined outside the function
 
     for child_dict in data:
@@ -399,11 +422,11 @@ def build_spell_tree(token, engine, data, prompt, starters):
                 char1 = ' '
                 char2 = ' '
                 count = 0
-                while not (char1 in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz' and char2 in '-–—') and count < 25:
+                while not (char1 in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' and char2 in '-–—') and count < 25:
                     resp = openai.Completion.create(engine=engine, temperature = 1, prompt = current_prompt, max_tokens = 3)
                     comp = resp["choices"][0]["text"].lstrip()
                     tot_tok += resp['usage']['total_tokens'] # Add the number of tokens used in this request to the total
-                    comp = comp.lstrip('-').lstrip('–').lstrip('—')
+                    comp = comp.lstrip('-').lstrip('–').lstrip('—').lstrip('"').lstrip("'")
                     if len(comp) > 1:
                         char1 = comp[0]
                         char2 = comp[1]
@@ -432,9 +455,12 @@ def build_spell_tree(token, engine, data, prompt, starters):
                     if existing_child is not None:
                         # If it does, update its weight
                         existing_child["weight"] += weight
+                        existing_child["cumu_weight"] *= weight
                     else:
                         # If it doesn't, append a new child dictionary
-                        child_dict["children"].append({"level": level + 1, "letter": next_letter, "weight": weight, "children": []})
+                        child_dict["children"].append({"level": level + 1, "letter": next_letter, "weight": weight, "cumu_weight": 1, "children": []})
+
+            cumu_weight = 1
 
             if level < max_depth:       
                 build_spell_tree(token, engine, child_dict["children"], prompt, starters)         
@@ -481,18 +507,20 @@ def build_spell_tree(token, engine, data, prompt, starters):
 
                         prob = next_letter_dict[letter]
                         weight =  prob * child_dict["weight"]
+
+                        cumu_weight = prob * child_dict["cumu_weight"]      #### THIS IS UPDATING CUMULATIVE WEIGHT FOR THIS PARTICULAR SPELLING PATHWAY
                                 
                         if weight > cutoff:
                             existing_child = next((child for child in child_dict["children"] if child["letter"] == letter and child["level"] == level + 1), None)
                             if existing_child is not None:
-                                existing_child["weight"] += weight
+                                existing_child["weight"] += weight   # WE'RE ADDING HERE TO TAKE INTO ACCOUNT UPPER AND LOWER CASE LETTERS
                             else:
-                                child_dict["children"].append({"level": level + 1, "letter": letter, "weight": weight, "children": []})
+                                child_dict["children"].append({"level": level + 1, "letter": letter, "weight": weight, "cumu_weight": cumu_weight, "children": []})
 
                 if level < max_depth:       
                     build_spell_tree(token, engine, child_dict["children"], current_prompt, starters)
 
-    return data    
+    return data
 
 
 def build_visual_tree(node, node_dict_list = [], parent_x=0, parent_y=0, angle=90, scale=1, current_string='', prev_weight=50, is_root=True, level=0, rotations={}, ax=None):
@@ -575,17 +603,46 @@ def mainfunction(data):
 
 
 
+    #print("\n\nTREE JSON:")
+    #print(tree_json)
     print("\n\nPROMPT: ")
     print(prompt)
-    print("\n\nTREE JSON:")
-    print(tree_json)
+    print("\n\n")
+
+    exten_len = int((len(prompt) - len(base_prompt) - len(starters))/2)
+    
+    # Create a Figure instance
+    fig = Figure(figsize=(8, 8))
+
+    # Add an Axes to this figure
+    ax = fig.add_subplot(1, 1, 1)
+
+    # You should modify your build_visual_tree to take an additional parameter, ax, and draw on this axes
+    node_dict_list = build_visual_tree(tree_json, node_dict_list = [], rotations={}, ax=ax)
+
+    
+    cumu_weight = tree_json['cumu_weight']
+    nodes = []
+    for d in node_dict_list:
+        if d['letter'] != "":
+            nodes.append(d['letter'])
+    print(f"NODES AVAILABLE: {nodes}")
+    print("\n\n")
+    print(f"CUMULATIVE PROBABILTY FOR THIS ROLLOUT: {cumu_weight}")
+    print(f"(equivalently ~ 1 in {int(1/cumu_weight)})")
+    print("\n\n")
+    print(f"NUMBER OF CHARACTERS APPENDED: {exten_len}")
+    if exten_len:
+        print(f"CUMULATIVE PROBABILITY NORMALISED: {cumu_weight**(1/exten_len)}")
     print("\n\n")
     print("TOTAL TOKENS USED:")
     print(tot_tok)              # Print the total number of tokens used so far
     print("\n\n")
 
-
-    caption = "PROMPT: " + prompt + '\n\n'
+    if exten_len != 0:
+        caption = "PROMPT: " + prompt + '\n\n' + 'NORMALISED CUMULATIVE PROBABILTY: ' + "{:.3f}".format(cumu_weight**(1/exten_len))
+    else:
+        caption = "PROMPT: " + prompt + '\n\n'
 
     # Split the original caption into lines
     lines = caption.split('\n')
@@ -600,15 +657,7 @@ def mainfunction(data):
 
     # Join the wrapped lines, preserving original line breaks
     caption_new = '\n'.join(wrapped_lines)
-    
-    # Create a Figure instance
-    fig = Figure(figsize=(8, 8))
 
-    # Add an Axes to this figure
-    ax = fig.add_subplot(1, 1, 1)
-
-    # You should modify your build_visual_tree to take an additional parameter, ax, and draw on this axes
-    node_dict_list = build_visual_tree(tree_json, node_dict_list = [], rotations={}, ax=ax)
 
     # Now we can call all the methods of ax instead of plt
     ax.axis('off')
@@ -627,7 +676,7 @@ def mainfunction(data):
     left_frame.grid(row=0, column=0, padx=10, pady=5)  
     left_frame.grid_propagate(False)
 
-    create_initial_widgets(root0, left_frame, node_dict_list, fig)
+    create_initial_widgets(root0, left_frame, node_dict_list, fig, cumu_weight)
 
     right_frame = tk.Frame(root0)
     right_frame.grid(row=0, column=1, padx=10, pady=5, sticky='nsew')
