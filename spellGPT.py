@@ -16,6 +16,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import tkinter.scrolledtext as st
 
+open_ai_key = "xx-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 starters_blank = False
@@ -82,10 +83,10 @@ def submit():                   # Handles submissions to "SpellGPT settings" win
             widget.destroy()
 
         root.update()
-        label_iter = tk.Label(root, text='As you have entered a blank field for "starters", the prompt\n\n"' + base_prompt[:-1] + '"\n\nwill be used some number of times in a loop until a capital-letter-plus-hyphen\npair of tokens is output. The branches from the root node are produced statistically\nbased on this sampling. All further generations are generated solely by the\ntop-five log probs produced by the API for the current prompt-plus-extension.\n\nPlease enter a number of iterations. Larger numbers will cause some time delay\nin generation and be costlier in token use, but lead to more "accurate" results.\n\nNote that the davinci model is very resistant to producing these token pairs,\ncompared to the instruct models.')
+        label_iter = tk.Label(root, text='''As you have entered a blank field for "starters", the prompt\n\n'The string "''' + token + '''" starts with the letter'\n\nwill be iterated over to harvest a specified number of single-letter outputs. The \nbranches from the root node will be based on this sampling.\nAll further generations will be generated solely by the top-five log\nprobs produced by the API for the current prompt-plus-extension.\n\nPlease enter a number of iterations. Larger numbers will cause some time delay\nin generation and be costlier in token use, but lead to more "accurate" results.''')
         label_iter.pack(pady=(100,20))
         entry_iter = tk.Entry(root, width = 5)
-        entry_iter.insert(0, "100")
+        entry_iter.insert(0, "250")
         entry_iter.pack()
 
         iter_submit_button = tk.Button(root, text='submit', command=lambda: iter_submit(entry_iter))
@@ -116,7 +117,7 @@ root.title("SpellGPT settings")
 label1 = tk.Label(root, text="OpenAI API key")
 label1.pack(pady=(20,0))
 entry1 = tk.Entry(root, width = 55)
-entry1.insert(0, "xx-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+entry1.insert(0, open_ai_key)
 entry1.pack()
 
 label5 = tk.Label(root, text="engine")
@@ -140,7 +141,7 @@ entry3.pack()
 label4 = tk.Label(root, text="weight cutoff for branches")
 label4.pack(pady=(20,0))
 entry4 = tk.Entry(root, width = 8)
-entry4.insert(0, "0.0075")
+entry4.insert(0, "0.01")
 entry4.pack()
 
 label6 = tk.Label(root, text="maximimum letter depth per iteration")
@@ -298,7 +299,8 @@ def done_yes_clicked(root0, left_frame, node_dict_list, fig, cumu_weight):      
     now = datetime.now()
     datetime_str = now.strftime('%Y%m%d_%H%M%S')
     fig.savefig(save_subfolder + '/images/' + datetime_str + '_' + token.strip() + '_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_spelltree.png')
-    
+    #       fig.savefig(save_subfolder + '/images/' + datetime_str + '_TOKEN47182_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_spelltree.png')
+     
     # Update the global prompt_widget variable
     prompt_widget = st.ScrolledText(left_frame, width=30, height=16)
     prompt_widget.insert("insert", "ENGINE: " + engine + "\n\nPROMPT: " + prompt)
@@ -414,59 +416,37 @@ def build_spell_tree(token, engine, data, prompt, starters):                    
         h_letter = hyphenise(letter)
         current_prompt = prompt + h_letter
 
-        if starters == "" and len(base_prompt) == len(current_prompt):   # to get spelling started, use the old method of forcing a (letter, hyphen) token pair
-            next_letter_list = []
-            print('\n\n')
-            for j in range(runs_per_it):
-                print("Iteration " + str(j) + ":")
-                char1 = ' '
-                char2 = ' '
-                count = 0
-                while not (char1 in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' and char2 in '-–—') and count < 25:
-                    resp = openai.Completion.create(engine=engine, temperature = 1, prompt = current_prompt, max_tokens = 3)
-                    comp = resp["choices"][0]["text"].lstrip()
-                    tot_tok += resp['usage']['total_tokens'] # Add the number of tokens used in this request to the total
-                    comp = comp.lstrip('-').lstrip('–').lstrip('—').lstrip('"').lstrip("'")
-                    if len(comp) > 1:
-                        char1 = comp[0]
-                        char2 = comp[1]
-                        print(char1 + char2)
-                    count += 1
-                if count == 25:
-                    next_letter_list.append('.')     # after 25 attempt no letter+hyphen pair has appeared, so add a full stop to signify end of word
-                else:
-                    next_letter_list.append(char1.upper())
-            print('\n\n')
+        if starters == "" and len(base_prompt) == len(current_prompt):   # to get spelling started, ask it for first letter 100 times
+            first_letter_list = []
+            print('\n\nThe string "' + token + '" starts with the letter')
+            while len(first_letter_list) < runs_per_it:
+                resp = openai.Completion.create(engine=engine, temperature = 1, prompt = 'The string "' + token + '" starts with the letter', max_tokens = 3)                
+                comp = resp["choices"][0]["text"].lstrip().split(' ')[0]
+                output_letters = [char for char in comp if char.isascii() and char.isalpha()]    
+                if len(output_letters) == 1:   
+                    first_letter_list.append(output_letters[0].upper())
+                    print(output_letters[0].upper())
 
+            d = Counter(first_letter_list)              # d will be a dictionary with letters as keys and numbers of occurence as values.
+            first_letters = list(d.keys())          
 
-            d = Counter(next_letter_list)
-            next_letters = list(d.keys())
+            sorted_d = sorted(d.items(), key=lambda item: item[1], reverse=True)
+            top_five_d = dict(sorted_d[:5])
 
-            for next_letter in next_letters:
-                print("next letter is " + next_letter)
-                if next_letter == '.':
-                    weight = 0
-                else:
-                    weight = (d[next_letter]/runs_per_it) * child_dict["weight"]
-                print("weight = " + str(weight))
-                if weight > cutoff:
-                    # Check if child with same letter and level already exists
-                    existing_child = next((child for child in child_dict["children"] if child["letter"] == next_letter and child["level"] == level + 1), None)
-                    if existing_child is not None:
-                        # If it does, update its weight
-                        existing_child["weight"] += weight
-                        existing_child["cumu_weight"] *= weight
-                    else:
-                        # If it doesn't, append a new child dictionary
-                        child_dict["children"].append({"level": level + 1, "letter": next_letter, "weight": weight, "cumu_weight": 1, "children": []})
+            for first_letter in top_five_d.keys():
+                proportion = top_five_d[first_letter]/runs_per_it
+                if  proportion > cutoff:
+                    child_dict["children"].append({"level": level + 1, "letter": first_letter, "weight": proportion, "cumu_weight": 1, "children": []})
+                    print("first letter: " + first_letter)
+                    print("proportion of occurence: " + str(proportion))
 
             cumu_weight = 1
 
             if level < max_depth:       
                 build_spell_tree(token, engine, child_dict["children"], prompt, starters)         
 
-
-        else: # once it's got started, we can just use logprobs provided by a single API call!
+ 
+        else:        # Once there's at least one letter there, we can just use logprobs provided by a single API call.
             next_letter_dict = {}
             print(current_prompt)
 
@@ -599,7 +579,8 @@ def mainfunction(data):
     now = datetime.now()
     datetime_str = now.strftime('%Y%m%d_%H%M%S')
     with open(save_subfolder + '/JSON/' + datetime_str + '_' + token.strip() + '_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_tree.json', 'w') as outfile:
-        json.dump(tree_json, outfile)
+    #with open(save_subfolder + '/JSON/' + datetime_str + '_TOKEN47182_' + prompt[len(base_prompt):].replace('-','') + '_' + engine + '_tree.json', 'w') as outfile:
+            json.dump(tree_json, outfile)
 
 
 
