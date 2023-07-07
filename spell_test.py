@@ -1,3 +1,5 @@
+# This inputs a string (ideally a GPT token) and iteratively runs a one-shot prompt to produce a S-P-E-L-L-I-N-G style spelling, then assesses its accuracy.
+
 import openai
 import re
 
