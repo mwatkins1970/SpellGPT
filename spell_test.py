@@ -1,6 +1,3 @@
-# This is based on spellz2.py
-# Make it so you test one token at a time and its less voracious
-
 import openai
 import re
 
